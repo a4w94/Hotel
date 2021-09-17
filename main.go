@@ -12,6 +12,8 @@ type AllRoomTypeURL struct {
 	Url string `yaml:"URL_RoomType"`
 }
 
+const token = "bwRMIGnrqqLsvMyDlM8OxT89yTSREwUxoNWxPIZ1wuVZvT3FgYtLGgsmIRIb"
+
 func main() {
 	HttpRoomTypeGet()
 
@@ -22,13 +24,18 @@ func HttpRoomTypeGet() {
 	var allRoomTypeUrl AllRoomTypeURL
 	allRoomTypeUrl.GetUrl()
 
-	resp, err := http.Get(allRoomTypeUrl.Url)
+	client := &http.Client{}
+
+	req, err := http.NewRequest("GET", allRoomTypeUrl.Url, nil)
+	req.Header.Add("Authorization", "Bearer "+token)
+	req.Header.Set("Accept", "application/json")
 
 	Error(err)
-
+	resp, err := client.Do(req)
 	body, err := ioutil.ReadAll(resp.Body)
 	Error(err)
 	fmt.Println(string(body))
+	defer resp.Body.Close()
 
 }
 
